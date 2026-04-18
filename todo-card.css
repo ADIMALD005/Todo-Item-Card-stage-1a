@@ -1,0 +1,453 @@
+/* TODO CARD  |  todo-card.css Stage 0 base + Stage 1 enhancements */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --color-background-primary:   #ffffff;
+  --color-background-secondary: #f5f5f3;
+  --color-text-primary:         #1a1a18;
+  --color-text-secondary:       #5f5e5a;
+  --color-text-tertiary:        #b4b2a9;
+  --color-border-tertiary:      rgba(0, 0, 0, 0.12);
+  --color-border-secondary:     rgba(0, 0, 0, 0.22);
+  --color-border-primary:       rgba(0, 0, 0, 0.35);
+  --border-radius-md:           8px;
+  --border-radius-lg:           12px;
+  --font-sans:                  'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* Priority accent colours */
+  --priority-high-color:   #c0392b;
+  --priority-medium-color: #d68910;
+  --priority-low-color:    #1e8449;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-primary:   #1e1e1c;
+    --color-background-secondary: #2a2a28;
+    --color-text-primary:         #f0ede8;
+    --color-text-secondary:       #a8a59e;
+    --color-text-tertiary:        #5f5e5a;
+    --color-border-tertiary:      rgba(255, 255, 255, 0.10);
+    --color-border-secondary:     rgba(255, 255, 255, 0.18);
+    --color-border-primary:       rgba(255, 255, 255, 0.28);
+  }
+}
+
+/* Utility */
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); border: 0;
+}
+
+.hidden { display: none !important; }
+
+/* Page */
+
+body {
+  margin: 0;
+  padding: 2rem 1rem;
+  font-family: var(--font-sans);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+/* Card */
+
+article[data-testid="test-todo-card"] {
+  position: relative;
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-lg);
+  padding: 0;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+article[data-testid="test-todo-card"]:focus-within {
+  border-color: var(--color-border-primary);
+  box-shadow: 0 0 0 3px rgba(83, 74, 183, 0.10);
+}
+
+/* Stage 1: Priority indicator bar (left accent) */
+
+.priority-indicator {
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--priority-high-color);
+  transition: background .3s;
+}
+.priority-indicator.high   { background: var(--priority-high-color); }
+.priority-indicator.medium { background: var(--priority-medium-color); }
+.priority-indicator.low    { background: var(--priority-low-color); }
+
+/* Stage 1: Overdue indicator pill */
+
+.overdue-indicator {
+  display: inline-flex;
+  align-items: center;
+  margin: 0.75rem 0 0 1.6rem;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #a32d2d;
+  background: #faece7;
+  border: 0.5px solid #f0997b;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+/* View / Edit containers */
+
+.view-mode,
+.edit-mode {
+  padding: 1.25rem 1.25rem 1.25rem 1.6rem;
+}
+
+/* Card top row */
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.checkbox-wrap { flex-shrink: 0; margin-top: 3px; }
+
+input[type="checkbox"] {
+  width: 18px; height: 18px;
+  cursor: pointer;
+  accent-color: #534ab7;
+}
+input[type="checkbox"]:focus {
+  outline: 2px solid #534ab7;
+  outline-offset: 2px;
+}
+
+.title-group { flex: 1; min-width: 0; }
+
+h2[data-testid="test-todo-title"] {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 6px;
+  line-height: 1.4;
+  word-break: break-word;
+  transition: color .2s, text-decoration .2s;
+}
+h2.done {
+  text-decoration: line-through;
+  color: var(--color-text-tertiary);
+}
+
+/* Badges */
+
+.badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 0.5px solid transparent;
+  letter-spacing: 0.02em;
+}
+
+.priority-high   { background: #faece7; color: #712b13; border-color: #f0997b; }
+.priority-medium { background: #faeeda; color: #633806; border-color: #ef9f27; }
+.priority-low    { background: #eaf3de; color: #3b6d11; border-color: #97c459; }
+
+.status-pending     { background: #e6f1fb; color: #0c447c; border-color: #85b7eb; }
+.status-in-progress { background: #eeedfe; color: #3c3489; border-color: #afa9ec; }
+.status-done        { background: #eaf3de; color: #3b6d11; border-color: #97c459; }
+
+/* Description */
+
+.description-wrap { margin-bottom: 1rem; }
+
+p[data-testid="test-todo-description"] {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 4px;
+  line-height: 1.65;
+  word-break: break-word;
+}
+
+/* Stage 1: Expand / Collapse */
+
+.collapsible-section {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+}
+.collapsible-section.open { max-height: 600px; }
+
+.expand-toggle {
+  background: none;
+  border: none;
+  padding: 2px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #534ab7;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+.expand-toggle:hover { text-decoration: underline; }
+.expand-toggle:focus {
+  outline: 2px solid #534ab7;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Meta row */
+
+.meta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.meta-icon {
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+  opacity: 0.55;
+  color: var(--color-text-secondary);
+}
+
+time { font-size: 13px; color: var(--color-text-secondary); }
+
+[data-testid="test-todo-time-remaining"] {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Stage 1: time colour states */
+.time-overdue { color: #a32d2d; }
+.time-soon    { color: #854f0b; }
+.time-fine    { color: #3b6d11; }
+.time-done    { color: var(--color-text-tertiary); }
+
+/* Divider */
+
+.divider {
+  height: 0.5px;
+  background: var(--color-border-tertiary);
+  margin: 0.75rem 0;
+}
+
+/* Stage 1: Status control row */
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.control-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+select[data-testid="test-todo-status-control"] {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+select[data-testid="test-todo-status-control"]:focus {
+  outline: 2px solid #534ab7;
+  outline-offset: 2px;
+}
+
+/* Tags */
+
+ul[data-testid="test-todo-tags"] {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+li[data-testid^="test-todo-tag-"] {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  color: var(--color-text-secondary);
+}
+
+/* Card action buttons */
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+button {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  border: 0.5px solid var(--color-border-secondary);
+  background: transparent;
+  color: var(--color-text-primary);
+  transition: background .15s, border-color .15s;
+}
+button:hover {
+  background: var(--color-background-secondary);
+  border-color: var(--color-border-primary);
+}
+button:focus {
+  outline: 2px solid #534ab7;
+  outline-offset: 2px;
+}
+button:active { transform: scale(0.98); }
+
+button[data-testid="test-todo-delete-button"] {
+  color: #a32d2d;
+  border-color: #f0997b;
+}
+button[data-testid="test-todo-delete-button"]:hover { background: #faece7; }
+
+/* Stage 1: Done card state */
+
+article.is-done { opacity: 0.72; }
+
+/* Stage 1: Edit form */
+
+.edit-mode { display: flex; flex-direction: column; }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 0.85rem;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  padding: 8px 10px;
+  border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  width: 100%;
+  transition: border-color .15s;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: 2px solid #534ab7;
+  outline-offset: 0;
+  border-color: #534ab7;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.btn-primary {
+  background: #534ab7;
+  color: #fff;
+  border-color: #534ab7;
+  font-weight: 600;
+}
+.btn-primary:hover {
+  background: #3c3489;
+  border-color: #3c3489;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-secondary);
+}
+.btn-secondary:hover { background: var(--color-background-secondary); }
+
+/* Responsive */
+
+@media (max-width: 480px) {
+  body { padding: 1rem 0.75rem; }
+
+  .view-mode,
+  .edit-mode { padding: 1rem 1rem 1rem 1.4rem; }
+
+  .meta { flex-direction: column; gap: 0.4rem; }
+  .form-row { grid-template-columns: 1fr; }
+
+  .card-actions,
+  .form-actions { flex-direction: column; }
+
+  .card-actions button,
+  .form-actions button { width: 100%; text-align: center; }
+}
